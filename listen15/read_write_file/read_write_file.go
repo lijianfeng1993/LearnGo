@@ -107,12 +107,38 @@ func ioutil_read_file(){
 //		w --> --> 002
 //		x --> --> 001
 func write_file(){
+	file, err := os.OpenFile("test.dat", os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		fmt.Println("open file failed.")
+		return
+	}
+	defer file.Close()
+	str := "hello world"
+	//file.Write([]byte(str))
+	file.WriteString(str)
 
+	//用bufio进行文件写入
+	writer := bufio.NewWriter(file)
+	for i :=0; i<10; i++ {
+		writer.WriteString("hello\n")
+	}
+	writer.Flush()
 }
 
+func ioutil_write_file(){
+	str := "helloworld"
+	err := ioutil.WriteFile("ljf.dat", []byte(str), 0755)
+	if err != nil {
+		fmt.Print("write file failed.")
+		return
+	}
+}
 
 func main() {
 	//read_whole_file()
 	//read_bufio_file()
-	ioutil_read_file()
+	//ioutil_read_file()
+	ioutil_write_file()
 }
+
+
