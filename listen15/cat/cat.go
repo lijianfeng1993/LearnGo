@@ -33,3 +33,4 @@ func main(){
 		cat(bufio.NewReader(f))
 	}
 }
+
