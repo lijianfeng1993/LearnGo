@@ -31,26 +31,26 @@ type Animal interface {
 
 type Dog struct {
 }
-func (d *Dog) Talk(){
+func (d Dog) Talk(){
 	fmt.Println("dog is talking")
 }
-func (d *Dog) Eat(){
+func (d Dog) Eat(){
 	fmt.Println("dog is eating")
 }
-func (d *Dog) Name() string{
+func (d Dog) Name() string{
 	fmt.Println("my name is wangcai.")
 	return "wangcai"
 }
 
 type Pig struct {
 }
-func (p *Pig) Talk(){
+func (p Pig) Talk(){
 	fmt.Println("pig is talking")
 }
-func (d *Pig) Eat(){
+func (d Pig) Eat(){
 	fmt.Println("pig is eating")
 }
-func (d *Pig) Name() string{
+func (d Pig) Name() string{
 	fmt.Println("my name is bajie.")
 	return "bajie"
 }
@@ -58,12 +58,12 @@ func (d *Pig) Name() string{
 func test_interface_animal(){
 	var d Dog
 	var a Animal
-	a = &d  //接口中可以存储任何类型的实现了接口的变量
+	a = d  //接口中可以存储任何类型的实现了接口的变量
 	a.Eat()
 	a.Name()
 
 	var p Pig
-	a = &p
+	a = p
 	a.Eat()
 	a.Name()
 }
@@ -206,7 +206,7 @@ func testswitch(a interface{}) {
 	default:
 		fmt.Println("not support type.")
 	}
-	/* 更好的写法
+	/* 更好的写法,推荐这么写
 	switch v:=a.(type) {
 	case int:
 		fmt.Println("a is int:", v)
@@ -228,6 +228,24 @@ func test_interface_assert2()  {
 	testswitch(fl)
 }
 
+//	如果不是空接口，如何判断里面存的对象的类型
+func just(a Animal)  {
+	switch v := a.(type) {
+	case Dog:
+		fmt.Println("v is dog:", v)
+	case Pig:
+		fmt.Println("v is pig:", v)
+	default:
+		fmt.Println("not support.")
+	}
+}
+func test_interface_assert3()  {
+	var d Pig
+	just(d)
+}
+
+//指针接受
+
 
 
 func main(){
@@ -236,5 +254,5 @@ func main(){
 	//test_interface_null()
 	//test_interface_null2()
 	//test_interface_assert()
-	test_interface_assert2()
+	test_interface_assert3()
 }
