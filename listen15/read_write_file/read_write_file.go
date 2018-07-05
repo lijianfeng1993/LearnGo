@@ -140,5 +140,3 @@ func main() {
 	//ioutil_read_file()
 	ioutil_write_file()
 }
-
-
