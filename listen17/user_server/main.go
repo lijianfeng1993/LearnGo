@@ -7,3 +7,4 @@ func main(){
 	file.LogDebug("this is Debug log.")
 	file.LogWarn("this is Warn log.")
 }
+
