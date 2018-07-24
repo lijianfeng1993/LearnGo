@@ -41,6 +41,9 @@ func (d Dog) Name() string{
 	fmt.Println("my name is wangcai.")
 	return "wangcai"
 }
+func (d Dog) Tais() {
+	fmt.Println("dog is taisheng.")
+}
 
 type Pig struct {
 }
@@ -245,8 +248,54 @@ func test_interface_assert3()  {
 }
 
 //指针接受
+//值类型实现了接口，可以用指针类型传进去，但是如果用指针类型实现的接口，那个不能用值类型传进去
+//因为：如果一个变量存储在接口类型的变量中后，那么不能获取这个变量的地址
+func test_interface_zhizhen()  {
+	var a Animal
+	var d *Dog = &Dog{}
+	a = d
+	a.Eat()
+	fmt.Printf("Dog %T %v\n", a, a)
+}
 
+//一个猪可以实现一个animal的接口，也可以实现一个别的接口(Taisheng)，没有数量限制
+type Taisheng interface {
+	Tais()
+}
+func test_interface_multi(){
+	var a Animal
+	var t Taisheng
+	var d Dog
 
+	a = d
+	a.Eat()
+
+	t = d
+	t.Tais()
+}
+
+//接口嵌套，和结构体嵌套类似
+type Describe interface {
+	Describe() string
+}
+//嵌套了两个接口的方法
+type AdvanceAnimal interface {
+	Animal
+	Describe
+}
+func (d Dog) Describe() (string) {
+	fmt.Println("i can describe.")
+	return "i can describe"
+}
+func test_interface_qiantao()  {
+	var a AdvanceAnimal
+	var d Dog
+	a = d
+	a.Describe()
+	a.Name()
+	a.Eat()
+	a.Talk()
+}
 
 func main(){
 	//test_interface_animal()
@@ -254,5 +303,8 @@ func main(){
 	//test_interface_null()
 	//test_interface_null2()
 	//test_interface_assert()
-	test_interface_assert3()
+	//test_interface_assert3()
+	//test_interface_zhizhen()
+	//test_interface_multi()
+	test_interface_qiantao()
 }
