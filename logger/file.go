@@ -3,7 +3,11 @@ package logger
 import (
 	"os"
 	"fmt"
+	"time"
+	"path"
 )
+
+// 2018/3/26 0:01.383  DEBUG  logDebug.go:29  this is a debug log
 
 type FileLogger struct {
 	level int
@@ -32,7 +36,7 @@ func (f *FileLogger) init() {
 	f.file = file
 
 	//写错误日志和fatal日志的文件
-	filename = fmt.Sprintf("%s/%s.log", f.logPath, f.logName)
+	filename = fmt.Sprintf("%s/%s-error.log", f.logPath, f.logName)
 	file, err = os.OpenFile(filename, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0755)
 	if err != nil {
 		panic(fmt.Sprintf("open file %s failed, err:%v", filename, err))
@@ -47,46 +51,64 @@ func (f *FileLogger) SetLevel(level int){
 	f.level = level
 }
 
-func (f *FileLogger) Debug(format string, args ...interface{}){
-	if (f.level) > LogLevelDebug {
+func (f *FileLogger) writeLog(file *os.File, level int, format string, args ...interface{}){
+	if (f.level) > level {
 		return
 	}
-	fmt.Fprintf(f.file, format, args...)
+
+	now := time.Now()
+	nowStr := now.Format("2006-01-02 15:04:05.999")  //以go的诞生之日为时间点格式化，固定的，不能变
+
+	levelStr := getLevelText(level)
+
+	fileName, funcName, lineNo := GetLineInfo()
+	fileName = path.Base(fileName)
+	funcName = path.Base(funcName)
+
+	msg := fmt.Sprintf(format, args...)
+	fmt.Fprintf(file, "%s %s (%s:%s:%d) %s\n", nowStr, levelStr, fileName, funcName, lineNo, msg)
+}
+
+func (f *FileLogger) Debug(format string, args ...interface{}){
+	if f.level > LogLevelDebug {
+		return
+	}
+	writeLog(f.file, LogLevelDebug, format, args...)
 }
 
 func (f *FileLogger) Trace(format string, args ...interface{}){
-	if (f.level) > LogLevelDebug {
+	if f.level > LogLevelTrace {
 		return
 	}
-	fmt.Fprintf(f.file, format, args...)
+	writeLog(f.file, LogLevelTrace, format, args...)
 }
 
 func (f *FileLogger) Info(format string, args ...interface{}){
-	if (f.level) > LogLevelDebug {
+	if f.level > LogLevelInfo {
 		return
 	}
-	fmt.Fprintf(f.file, format, args...)
+	writeLog(f.file, LogLevelInfo, format, args...)
 }
 
 func (f *FileLogger) Warn(format string, args ...interface{}){
-	if (f.level) > LogLevelDebug {
+	if f.level > LogLevelWarn {
 		return
 	}
-	fmt.Fprintf(f.file, format, args...)
+	writeLog(f.warnFile, LogLevelWarn, format, args...)
 }
 
 func (f *FileLogger) Error(format string, args ...interface{}){
-	if (f.level) > LogLevelDebug {
+	if f.level > LogLevelError {
 		return
 	}
-	fmt.Fprintf(f.warnFile, format, args...)
+	writeLog(f.warnFile, LogLevelError, format, args...)
 }
 
 func (f *FileLogger) Fatal(format string, args ...interface{}){
-	if (f.level) > LogLevelDebug {
+	if f.level > LogLevelFatal {
 		return
 	}
-	fmt.Fprintf(f.warnFile, format, args...)
+	writeLog(f.warnFile, LogLevelFatal, format, args...)
 }
 
 func (f *FileLogger)Close(){
