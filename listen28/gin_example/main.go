@@ -17,5 +17,33 @@ func main(){
 	})
 
 	r.GET("/test", testHandle)
+	r.GET("/usr/search", func(c *gin.Context) {
+		username := c.Query("username")
+		address := c.Query("address")
+		c.JSON(200, gin.H{
+			"message":"pong",
+			"username": username,
+			"address": address,
+		})
+	})
+
+	r.GET("/usr/search/:username/:address", func(c *gin.Context) {
+		username := c.Param("username")
+	address : c.Param("address")
+		c.JSON(200, gin.H{
+			"message":"pong",
+			"username": username,
+			"address": address,
+		})
+	})
+	r.POST("/usr/search", func(c *gin.Context) {
+		username := c.PostForm("username")
+		address := c.PostForm("address")
+		c.JSON(200, gin.H{
+			"message":"pong",
+			"username": username,
+			"address": address,
+		})
+	})
 	r.Run(":9090")  //listen and server on 0.0.0.0:8080
 }
