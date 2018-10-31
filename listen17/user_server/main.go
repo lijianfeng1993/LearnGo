@@ -20,7 +20,6 @@ func initLogger(name, logPath, logName string, level string) (err error){
 	logger.Debug("init logger success.")
 	return
 }
-
 func Run(){
 	for {
 		logger.Debug("user server is running")
