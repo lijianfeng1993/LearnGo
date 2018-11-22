@@ -53,7 +53,7 @@ func reflect_value(a interface{}){
 
 
 func reflect_set_value(a interface{}) {
-	v := reflect.ValueOf(a)
+	v := reflect.ValueOf(a)  //v拿到的是一个副本，不能直接修改值
 	k := v.Kind()
 	switch k {
 	case reflect.Int64:
@@ -63,7 +63,7 @@ func reflect_set_value(a interface{}) {
 		v.SetFloat(6.8)
 		fmt.Printf("a is float64, store value is: %f", v.Float())
 	case reflect.Ptr:   //x 是值类型，传进来的是副本，所以需要传指针进来修改
-		v.Elem().SetFloat(6.8)
+		v.Elem().SetFloat(6.8)   //v.Elem()取得内存
 		//fmt.Printf("a is float64, store value is: %f", v.Float())
 	}
 }
